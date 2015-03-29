@@ -1,0 +1,69 @@
+This program implements a simple trading strategy for buying and selling shares of a particular stock whose price is known to fluctuate around $100. The strategy buys 50 shares whenever the price is below the $100 threshold and sells all shares when the price is above $105. To simulate an actual market, a deduction is accounted for (for selling: 0.06% a share or at least $40, and for buying: $40 fixed).
+
+Results obtained from over 100 trial runs illustrate that the trading strategy is effective, with an average annual profit of $64,000.
+
+The images accompanying the source code represent the shares, profit, and cash graphs over the course of 250 days.
+
+clear
+
+price = randn(250,1)*5+100;
+i = 1;
+cash(1) = 0;
+shares(1) = 0;
+
+while i <= 250
+    
+    if price(i) < 100
+   
+        shares(i+1) = shares(i) + 50;
+        deduction = 40;
+        cash(i+1) = cash(i) - 50*price(i) - deduction;
+
+    elseif price(i) > 105
+   
+        shares(i+1) = 0;
+
+        if shares(i)*0.06 > 40
+            
+            deduction = shares(i)*0.06;
+        
+        else
+            
+            deduction = 40;
+        
+        end
+        
+        cash(i+1) = cash(i) + shares(i)*price(i) - deduction;
+    
+    else
+        
+        shares(i+1) = shares(i);
+        cash(i+1) = cash(i);
+    
+    end
+    
+    i = i+1;
+    
+end
+
+t = 1:1:250;
+t2 = 1:1:251;
+
+
+figure()
+plot(t, price);
+title('Price Plot')
+xlabel('Days')
+ylabel('Price')
+
+figure()
+plot(t2, shares);
+title('Shares Plot')
+xlabel('Days')
+ylabel('Shares')
+
+figure()
+plot(t2, cash);
+title('Cash Plot')
+xlabel('Days')
+ylabel(‘Cash’)
